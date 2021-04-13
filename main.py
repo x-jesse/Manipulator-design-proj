@@ -11,17 +11,17 @@ def distance(x, y):
 
 
 def torque(l1, l2, l3, x, y, q3):
-    delta_x, delta_y, = x - l3*math.cos(q3), y + l3*math.sin(q3)
+    delta_x, delta_y, = x - l3*math.cos(q3), y - l3*math.sin(q3)
 
     try:
         q2 = math.acos((delta_x**2+delta_y**2-l1**2-l2**2)/(2*l1*l2))
         q1 = math.atan(delta_y/delta_x) - math.atan(l2*math.sin(q2)/(l1-l2*math.cos(q2)))
     except ValueError:
-        print("breaks", l1, l2, l3)
+        # print("breaks", l1, l2, l3)
+        return 999
     else:
         t = 0.5*l1*4*l1*math.sin(q1) + 0.5*l2*2*l2*math.sin(q2) + 0.5*l3*l3*5*9.81*math.sin(q3)
         return t
-    return 999
 
 # TORQUE CALCULATIONS
 
@@ -36,7 +36,7 @@ x2, y2 = 0.5, 0.5
 # CASE X = 0.2M, Y = 0.6M, THETA = 45 WRT X
 x3, y3 = 0.2, 0.6
 
-# cases = [(x1, y1, -60), (x2, y2, 0), (x3, y3, 45)]
+cases = [(x1, y1, -60), (x2, y2, 0), (x3, y3, 45)]
 
 mint = 100
 a, b, c = 0, 0, 0
@@ -51,10 +51,14 @@ for l in range(50):
             if l + ll + lll < 100:
                 continue
 
-            print(l1, l2, l3)
-            temp = torque(l1, l2, l3, x1, y1, q3)
-            if temp < mint:
-                mint = temp
+            # print(l1, l2, l3)
+            temp = 0
+            for c in cases:
+                x, y, q3 = c
+                temp += torque(l1, l2, l3, x, y, q3)**2
+
+            if abs(temp)**0.5 < mint:
+                mint = temp**0.5
                 a, b, c = l1, l2, l3
 
     print(mint, a, b, c)
