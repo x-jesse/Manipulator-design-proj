@@ -1,8 +1,18 @@
 import math
 
-###################################
-# MANIPULATOR DESIGN PROJ MTE 119 #
-###################################
+######################################
+# MANIPULATOR DESIGN PROJECT MTE 119 #
+######################################
+
+
+def distance(x, y):
+    d = math.sqrt(0.75**2 + 0.1**2)
+    return d
+
+def torque(length, force, angle):
+    t = 0.5*length*force*math.sin(angle)
+    return t
+
 
 # TORQUE CALCULATIONS
 
