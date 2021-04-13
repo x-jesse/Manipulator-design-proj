@@ -52,7 +52,7 @@ for l in range(50):
                 continue
 
             # print(l1, l2, l3)
-            temp = 0
+            temp = 999
             for c in cases:
                 x, y, q3 = c
                 temp += torque(l1, l2, l3, x, y, q3)**2
