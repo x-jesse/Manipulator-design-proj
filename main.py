@@ -10,7 +10,8 @@ def torque(l1, l2, l3, x, y, q3):
 
     try:
         q2 = math.acos((delta_x**2+delta_y**2-l1**2-l2**2)/(2*l1*l2))
-        q1 = math.atan(delta_y/delta_x) - math.atan(l2*math.sin(q2)/(l1-l2*math.cos(q2)))
+        q1 = math.atan(delta_y/delta_x) - math.atan(l2*math.sin(q2)/(l1-l2*math.cos(q2))) + math.pi/2
+        q2 = math.pi/2-(q1+q2)
     except ValueError:
         # print("breaks", l1, l2, l3)
         return 999, 0, 0
@@ -31,7 +32,7 @@ x2, y2 = 0.5, 0.5
 # CASE X = 0.2M, Y = 0.6M, THETA = 45 WRT X
 x3, y3 = 0.2, 0.6
 
-cases = [(x1, y1, math.radians(-60+90)), (x2, y2, math.radians(90)), (x3, y3, math.radians(45+90))]
+cases = [(x1, y1, math.radians(-60)), (x2, y2, math.radians(0)), (x3, y3, math.radians(45))]
 
 min_torque = 100
 a, b, c = 0, 0, 0
