@@ -31,17 +31,18 @@ x2, y2 = 0.5, 0.5
 # CASE X = 0.2M, Y = 0.6M, THETA = 45 WRT X
 x3, y3 = 0.2, 0.6
 
-cases = [(x1, y1, math.radians(-60)), (x2, y2, 0), (x3, y3, math.radians(45))]
+cases = [(x1, y1, math.radians(-60+90)), (x2, y2, math.radians(90)), (x3, y3, math.radians(45+90))]
 
 min_torque = 100
 a, b, c = 0, 0, 0
 q1, q2, q3 = 0, 0, 0
+lrange = 50
 
-for l in range(50):
+for l in range(lrange):
     l3 = l/100
-    for ll in range(50):
+    for ll in range(lrange):
         l2 = ll/100
-        for lll in range(50):
+        for lll in range(lrange):
             l1 = lll/100
             if l + ll + lll < 100:
                 continue
