@@ -54,7 +54,7 @@ def doIntersect(p_x, p_y, q_x, q_y, p2_x, p2_y, q2_x, q2_y):
 
 @njit(nogil=True)
 def valid_end_pos(end_point, target):
-    if abs(end_point[0] - target[0]) <= 0.1 and abs(end_point[1] - target[1]) <= 0.1:
+    if abs(end_point[0] - target[0]) <= 0.01 and abs(end_point[1] - target[1]) <= 0.01:
         return True
     else:
         return False
@@ -90,18 +90,18 @@ def calc_torque(l1, l2, l3, q1, q2, q3):
 def main():
     origin = (0, 0)
 
-    length_range, angle_range = 100, 360
+    start_length1, length_range1, start_length2, length_range2, start_length3, length_range3 = 60, 70, 1, 100, 1, 100
+    angle_range = 360
     final_l1, final_l2, final_l3 = 0, 0, 0
     final_torque = 9999
 
-    for i in range(length_range):
-        for ii in range(length_range):
-            for iii in range(length_range):
+    for i in range(start_length1, length_range1):
+        for ii in range(start_length2, length_range2):
+            for iii in range(start_length3, length_range3):
                 if i + ii + iii < 100:
                     continue
-                l1, l2, l3 = [n / length_range for n in [i, ii, iii]]
-                # print(l1, l2, l3)
 
+                l1, l2, l3 = [n / 100 for n in [i, ii, iii]]
                 t1, t2, t3 = 999, 999, 999
 
                 for q1 in range(angle_range):
@@ -117,12 +117,11 @@ def main():
                             q3 = m.radians(-60)
                             x3, y3 = l3 * m.cos(q3), l3 * m.sin(q3)
                             endpoint = (x1+x2+x3, y1+y2+y3)
+                            # print(endpoint)
                             target = (0.75, 0.1)
 
-                            print(valid_end_pos(endpoint, target))
-                            # print(not doIntersect(origin[0], origin[1], joint1[0], joint1[1], joint2[0], joint2[1], endpoint[0], endpoint[1]))
-                            # print(valid_end_pos(endpoint, target), doIntersect(origin[0], origin[1], joint1[0], joint1[1], joint2[0], joint2[1], endpoint[0], endpoint[1]))
                             if valid_end_pos(endpoint, target) and not doIntersect(origin[0], origin[1], joint1[0], joint1[1], joint2[0], joint2[1], endpoint[0], endpoint[1]):
+                                # print("t1", endpoint)
                                 t1 = calc_torque(l1, l2, l3, q1, q2, q3)
                                 case1 = True
                                 continue
@@ -134,9 +133,9 @@ def main():
                             endpoint = (x1+x2+x3, y1+y2+y3)
                             target = (0.5, 0.5)
 
-                            print(valid_end_pos(endpoint, target))
-
+                            # print(valid_end_pos(endpoint, target))
                             if valid_end_pos(endpoint, target) and not doIntersect(origin[0], origin[1], joint1[0], joint1[1], joint2[0], joint2[1], endpoint[0], endpoint[1]):
+                                # print("t2", endpoint)
                                 t2 = calc_torque(l1, l2, l3, q1, q2, q3)
                                 case2 = True
                                 continue
@@ -148,20 +147,19 @@ def main():
                             endpoint = (x1+x2+x3, y1+y2+y3)
                             target = (0.2, 0.6)
 
-                            print(valid_end_pos(endpoint, target))
+                            # print(valid_end_pos(endpoint, target))
                             if valid_end_pos(endpoint, target) and not doIntersect(origin[0], origin[1], joint1[0], joint1[1], joint2[0], joint2[1], endpoint[0], endpoint[1]):
+                                # print("t3", endpoint)
                                 t3 = calc_torque(l1, l2, l3, q1, q2, q3)
                                 case3 = True
-                                continue
-
-                        # print(case1, case2, case3)
 
                 if case1 and case2 and case3:
                     torque = m.sqrt(t1**2+t2**2+t3**2)
+                    print(torque)
                     if torque < final_torque:
                         final_l1, final_l2, final_l3 = l1, l2, l3
                         final_torque = torque
-                        print("T= ", final_torque)
+                        print("T=", final_torque, "l1=", final_l1, "l2=", final_l2, "l3=", final_l3)
 
 
 main()

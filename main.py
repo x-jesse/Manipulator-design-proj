@@ -64,8 +64,8 @@ cases = [(x1, y1, math.radians(-60)), (x2, y2, math.radians(0)), (x3, y3, math.r
 min_torque = 999
 final_l1, final_l2, final_l3 = 0, 0, 0
 q1, q2, q3 = 0, 0, 0
-lengths_range = 50
-start_length = 10
+lengths_range = 100
+start_length = 1
 
 # loops for lengths in lengths_range, testing all possible combinations of l1, l2, l3
 for l in range(start_length, lengths_range):
@@ -95,8 +95,7 @@ for l in range(start_length, lengths_range):
 
                 # really janky solution in the case that the third joint passes through the origin (obv not allowed)
                 if delta_y == 0 or delta_x == 0:
-                    min_torque = 999
-                    torque_val = 999
+                    # min_torque = 999
                     break
 
                 # gets the torque, stores its square
@@ -104,10 +103,11 @@ for l in range(start_length, lengths_range):
                 torque_val += temp_torque ** 2
 
             # after looping through cases, compares the new T to the original, stores the smaller one
-            if abs(torque_val) ** 0.5 < min_torque:
-                min_torque = torque_val ** 0.5
-                final_l1, final_l2, final_l3 = l1, l2, l3
-                # q1, q2 = a1, a2
+            else:
+                if torque_val ** 0.5 < min_torque:
+                    min_torque = torque_val ** 0.5
+                    final_l1, final_l2, final_l3 = l1, l2, l3
+                    # q1, q2 = a1, a2
 
     # print("T =", min_torque, "l1 =", final_l1, "q1 =", q1, "l2 =", final_l2, "q2 =", q2, "l3 =", final_l3, "q3 =", q3)
     print("T =", min_torque, "l1 =", final_l1, "l2 =", final_l2, "l3 =", final_l3)
