@@ -4,22 +4,8 @@ import math
 # MANIPULATOR DESIGN PROJECT MTE 119 #
 ######################################
 
-
 # TORQUE CALCULATIONS
 
-
-# def torque(l1, l2, l3, x, y, q3, delta_x, delta_y):
-#     try:
-#         q2 = math.acos((delta_x**2+delta_y**2-l1**2-l2**2)/float(2*l1*l2))
-#         q1 = math.atan(delta_y/delta_x) - math.atan(l2*math.sin(q2)/(l1-l2*math.cos(q2))) + math.pi/2
-#         q2 = math.pi/2-(q1+q2)
-#         q3 = math.pi/2-(q1+q2+q3)
-#     except ValueError:
-#         # print("breaks", l1, l2, l3)
-#         return 999, 0, 0
-#     else:
-#         t = 0.5*9.81*(l1*4*l1*math.sin(q1) + l2*2*l2*math.sin(q2) + l3*l3*5*math.sin(q3))
-#         return t, q1, q2
 
 def weight(length, thickness):
     return length * thickness * 9.81
@@ -75,17 +61,18 @@ x3, y3 = 0.2, 0.6
 cases = [(x1, y1, math.radians(-60)), (x2, y2, math.radians(0)), (x3, y3, math.radians(45))]
 
 # initializes values
-min_torque = 100
+min_torque = 999
 final_l1, final_l2, final_l3 = 0, 0, 0
 q1, q2, q3 = 0, 0, 0
 lengths_range = 50
+start_length = 10
 
 # loops for lengths in lengths_range, testing all possible combinations of l1, l2, l3
-for l in range(1, lengths_range):
+for l in range(start_length, lengths_range):
     l3 = l / 100
-    for ll in range(1, lengths_range):
+    for ll in range(start_length, lengths_range):
         l2 = ll / 100
-        for lll in range(1, lengths_range):
+        for lll in range(start_length, lengths_range):
             l1 = lll / 100
             if l + ll + lll < 100:  # lengths cannot sum to less than 1m
                 continue
@@ -108,12 +95,15 @@ for l in range(1, lengths_range):
 
                 # really janky solution in the case that the third joint passes through the origin (obv not allowed)
                 if delta_y == 0 or delta_x == 0:
+                    min_torque = 999
+                    torque_val = 999
                     break
 
                 # gets the torque, stores its square
                 temp_torque = new_torque(l1, l2, l3, delta_x, delta_y, q3)
                 torque_val += temp_torque ** 2
 
+            # after looping through cases, compares the new T to the original, stores the smaller one
             if abs(torque_val) ** 0.5 < min_torque:
                 min_torque = torque_val ** 0.5
                 final_l1, final_l2, final_l3 = l1, l2, l3
@@ -122,5 +112,4 @@ for l in range(1, lengths_range):
     # print("T =", min_torque, "l1 =", final_l1, "q1 =", q1, "l2 =", final_l2, "q2 =", q2, "l3 =", final_l3, "q3 =", q3)
     print("T =", min_torque, "l1 =", final_l1, "l2 =", final_l2, "l3 =", final_l3)
 
-# T = 0.0005142084671561576 l1 = 0.65 q1 = 1.797457664136724 l2 = 0.57 q2 = -2.089439581786089 l3 = 0.5 q3 = 0.7853981633974483
 
